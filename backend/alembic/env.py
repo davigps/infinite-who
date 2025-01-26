@@ -30,8 +30,6 @@ target_metadata = Base.metadata
 
 app_config = Config()
 
-print(app_config)
-
 db_uri = (
     f"postgresql+psycopg2://{app_config.DB_USER}:{app_config.DB_PASSWORD}"
     f"@{app_config.DB_HOST}:{app_config.DB_PORT}/{app_config.DB_NAME}"
