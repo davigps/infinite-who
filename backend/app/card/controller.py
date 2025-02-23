@@ -1,11 +1,9 @@
 import random
-
-from app.database.models import Card, Spoiler
+from app.database.models import Card, CardTranslation, Spoiler, SpoilerTranslation
 from app.card.repository import CardRepository
 from app.base.controller import BaseController
 from app.spoiler.repository import SpoilerRepository
-from app.card.schemas import CardCreate
-from app.card.schemas import CardUpdate
+from app.card.schemas import CardCreate, CardUpdate
 from app.llm.service import LlmService
 
 
@@ -24,13 +22,35 @@ class CardController(BaseController[Card, CardRepository, CardCreate, CardUpdate
         previous_card_titles = self.repository.get_all_card_titles()
         generated_card = self.llm_service.generate_card(previous_card_titles)
 
-        card = super().create(CardCreate(**generated_card.model_dump()))
+        translations = [
+            CardTranslation(
+                language_id=t.language_id,
+                title=t.title,
+                description=t.description,
+            )
+            for t in generated_card.translations
+        ]
+        card = self.repository.add(
+            Card(
+                translations=translations,
+            )
+        )
 
         random.shuffle(generated_card.spoilers)
 
         for spoiler in generated_card.spoilers:
+            spoiler_translations = [
+                SpoilerTranslation(
+                    language_id=t.language_id,
+                    content=t.content,
+                )
+                for t in spoiler.translations
+            ]
             self.spoiler_repository.add(
-                Spoiler(card_id=card.id, content=spoiler.content)
+                Spoiler(
+                    card_id=card.id,
+                    translations=spoiler_translations,
+                )
             )
 
         return card

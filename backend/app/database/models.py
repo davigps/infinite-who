@@ -11,6 +11,18 @@ from sqlalchemy.orm import (
 Base = declarative_base()
 
 
+class Language(Base):
+    __tablename__ = "languages"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    code: Mapped[str] = mapped_column(String(5), unique=True)  # e.g., 'en', 'pt-BR'
+    name: Mapped[str] = mapped_column(String)  # e.g., 'English', 'Portuguese (Brazil)'
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now(UTC))
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime, default=datetime.now(UTC), onupdate=datetime.now(UTC)
+    )
+
+
 class User(Base):
     __tablename__ = "users"
 
@@ -28,6 +40,25 @@ class Card(Base):
     __tablename__ = "cards"
 
     id: Mapped[int] = mapped_column(primary_key=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now(UTC))
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime, default=datetime.now(UTC), onupdate=datetime.now(UTC)
+    )
+
+    translations: Mapped[List["CardTranslation"]] = relationship(
+        back_populates="card", cascade="all, delete-orphan"
+    )
+    spoilers: Mapped[List["Spoiler"]] = relationship(
+        back_populates="card", cascade="all, delete-orphan"
+    )
+
+
+class CardTranslation(Base):
+    __tablename__ = "card_translations"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    card_id: Mapped[int] = mapped_column(ForeignKey("cards.id"), nullable=False)
+    language_id: Mapped[int] = mapped_column(ForeignKey("languages.id"), nullable=False)
     title: Mapped[str] = mapped_column(String)
     description: Mapped[str] = mapped_column(String)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now(UTC))
@@ -35,16 +66,14 @@ class Card(Base):
         DateTime, default=datetime.now(UTC), onupdate=datetime.now(UTC)
     )
 
-    spoilers: Mapped[List["Spoiler"]] = relationship(
-        back_populates="card", cascade="all, delete-orphan"
-    )
+    card: Mapped["Card"] = relationship("Card", back_populates="translations")
+    language: Mapped["Language"] = relationship("Language")
 
 
 class Spoiler(Base):
     __tablename__ = "spoilers"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    content: Mapped[str] = mapped_column(String, nullable=False)
     card_id: Mapped[int] = mapped_column(ForeignKey("cards.id"), nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now(UTC))
     updated_at: Mapped[datetime] = mapped_column(
@@ -52,6 +81,25 @@ class Spoiler(Base):
     )
 
     card: Mapped["Card"] = relationship("Card", back_populates="spoilers")
+    translations: Mapped[List["SpoilerTranslation"]] = relationship(
+        back_populates="spoiler", cascade="all, delete-orphan"
+    )
+
+
+class SpoilerTranslation(Base):
+    __tablename__ = "spoiler_translations"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    spoiler_id: Mapped[int] = mapped_column(ForeignKey("spoilers.id"), nullable=False)
+    language_id: Mapped[int] = mapped_column(ForeignKey("languages.id"), nullable=False)
+    content: Mapped[str] = mapped_column(String, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now(UTC))
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime, default=datetime.now(UTC), onupdate=datetime.now(UTC)
+    )
+
+    spoiler: Mapped["Spoiler"] = relationship("Spoiler", back_populates="translations")
+    language: Mapped["Language"] = relationship("Language")
 
 
 class SpoilerSeen(Base):

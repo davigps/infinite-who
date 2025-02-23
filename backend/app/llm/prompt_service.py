@@ -12,18 +12,41 @@ class PromptService:
         2. A description that provides context about who this character is
         3. Generate 10 unique spoilers/clues about this character that will help players guess who it is
 
+        The content should be generated in both English (en) and Portuguese (pt-BR).
+
         The response should be in JSON format with these fields:
         {
-            "title": "Character's full name",
-            "description": "Brief description of who this character is",
+            "translations": [
+                {
+                    "language_id": 1,  // English
+                    "title": "Character's full name in English",
+                    "description": "Brief description in English"
+                },
+                {
+                    "language_id": 2,  // Portuguese
+                    "title": "Character's full name in Portuguese",
+                    "description": "Brief description in Portuguese"
+                }
+            ],
             "spoilers": [
-                {"content": "Clue 1"},
-                {"content": "Clue 2"},
-                ...up to 10 clues
+                {
+                    "translations": [
+                        {
+                            "language_id": 1,
+                            "content": "Clue 1 in English"
+                        },
+                        {
+                            "language_id": 2,
+                            "content": "Clue 1 in Portuguese"
+                        }
+                    ]
+                },
+                // ... up to 10 clues, each in both languages
             ]
         }
 
         Make the clues interesting and varied, ranging from obvious to subtle hints about the character.
+        Ensure that the translations maintain the same meaning while being natural in each language.
         """
 
         previous_prompt = f"""
