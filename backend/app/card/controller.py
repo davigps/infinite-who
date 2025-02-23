@@ -1,3 +1,5 @@
+import random
+
 from app.database.models import Card, Spoiler
 from app.card.repository import CardRepository
 from app.base.controller import BaseController
@@ -19,9 +21,13 @@ class CardController(BaseController[Card, CardRepository, CardCreate, CardUpdate
         self.llm_service = llm_service
 
     def create(self) -> Card:
-        generated_card = self.llm_service.generate_card()
+        previous_card_titles = self.repository.get_all_card_titles()
+        generated_card = self.llm_service.generate_card(previous_card_titles)
 
         card = super().create(CardCreate(**generated_card.model_dump()))
+
+        random.shuffle(generated_card.spoilers)
+
         for spoiler in generated_card.spoilers:
             self.spoiler_repository.add(
                 Spoiler(card_id=card.id, content=spoiler.content)

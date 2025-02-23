@@ -1,6 +1,9 @@
+from typing import List
+
+
 class PromptService:
-    def get_create_card_prompt(self) -> str:
-        return """
+    def get_create_card_prompt(self, previous_card_titles: List[str]) -> str:
+        prompt = """
         You are a helpful assistant that generates content for a card game called "Profile".
         The game consists of cards containing clues about famous characters, where players need to guess who they are.
 
@@ -22,6 +25,15 @@ class PromptService:
 
         Make the clues interesting and varied, ranging from obvious to subtle hints about the character.
         """
+
+        previous_prompt = f"""
+        The previous card titles are:
+        {", ".join(previous_card_titles)}
+
+        The new card title should be different from the previous ones.
+        """
+
+        return f"{previous_prompt}\n\n{prompt}"
 
     def get_verify_guess_prompt(self) -> str:
         return """

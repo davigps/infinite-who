@@ -1,4 +1,5 @@
 import json
+from typing import List
 from app.llm.client import LlmClient
 from app.llm.schemas import GeneratedCard
 from app.llm.prompt_service import PromptService
@@ -12,8 +13,8 @@ class LlmService:
     def _remove_json_prefix(self, response: str) -> str:
         return response.replace("```json", "").replace("```", "")
 
-    def generate_card(self) -> GeneratedCard:
-        prompt = self.prompt_service.get_create_card_prompt()
+    def generate_card(self, previous_card_titles: List[str]) -> GeneratedCard:
+        prompt = self.prompt_service.get_create_card_prompt(previous_card_titles)
         response = self.llm_client.generate_text(prompt)
         response = self._remove_json_prefix(response)
         card_data = json.loads(response)
