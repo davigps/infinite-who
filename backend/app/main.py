@@ -4,6 +4,7 @@ import time
 
 from app.routes.users import users_router
 from app.routes.sessions import sessions_router
+from app.routes.cards import cards_router
 
 app = FastAPI(title="Infinite Who", version="0.0.1")
 start_time = time.time()
@@ -24,3 +25,4 @@ def get_health():
 
 app.include_router(users_router)
 app.include_router(sessions_router)
+app.include_router(cards_router)

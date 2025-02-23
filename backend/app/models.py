@@ -19,7 +19,9 @@ class User(Base):
     avatar_id: Mapped[int] = mapped_column(Integer)
     email: Mapped[str] = mapped_column(String)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now(UTC))
-    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now(UTC))
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime, default=datetime.now(UTC), onupdate=datetime.now(UTC)
+    )
 
 
 class Card(Base):
@@ -29,19 +31,27 @@ class Card(Base):
     title: Mapped[str] = mapped_column(String)
     description: Mapped[str] = mapped_column(String)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now(UTC))
-    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now(UTC))
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime, default=datetime.now(UTC), onupdate=datetime.now(UTC)
+    )
 
-    spoilers: Mapped[List["Spoiler"]] = relationship()
+    spoilers: Mapped[List["Spoiler"]] = relationship(
+        back_populates="card", cascade="all, delete-orphan"
+    )
 
 
 class Spoiler(Base):
     __tablename__ = "spoilers"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    card_id: Mapped[int] = mapped_column(ForeignKey("cards.id"))
-    description: Mapped[str] = mapped_column(String)
+    content: Mapped[str] = mapped_column(String, nullable=False)
+    card_id: Mapped[int] = mapped_column(ForeignKey("cards.id"), nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now(UTC))
-    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now(UTC))
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime, default=datetime.now(UTC), onupdate=datetime.now(UTC)
+    )
+
+    card: Mapped["Card"] = relationship("Card", back_populates="spoilers")
 
 
 class SpoilerSeen(Base):
@@ -51,7 +61,9 @@ class SpoilerSeen(Base):
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     spoiler_id: Mapped[int] = mapped_column(ForeignKey("spoilers.id"))
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now(UTC))
-    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now(UTC))
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime, default=datetime.now(UTC), onupdate=datetime.now(UTC)
+    )
 
 
 class CardAnswered(Base):
@@ -61,4 +73,6 @@ class CardAnswered(Base):
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     card_id: Mapped[int] = mapped_column(ForeignKey("cards.id"))
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now(UTC))
-    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now(UTC))
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime, default=datetime.now(UTC), onupdate=datetime.now(UTC)
+    )
