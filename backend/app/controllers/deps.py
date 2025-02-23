@@ -3,7 +3,12 @@ from fastapi import Depends
 from app.controllers.session import SessionController
 from app.controllers.user import UserController
 from app.models import User
-from app.repositories.deps import get_card_repository, get_user_repository
+from app.repositories.deps import (
+    get_card_repository,
+    get_spoiler_repository,
+    get_user_repository,
+)
+from app.repositories.spoiler import SpoilerRepository
 from app.repositories.user import UserRepository
 from app.repositories.card import CardRepository
 from app.services.llm import LlmService
@@ -26,6 +31,7 @@ def get_session_controller(
 
 def get_card_controller(
     card_repository: CardRepository = Depends(get_card_repository),
+    spoiler_repository: SpoilerRepository = Depends(get_spoiler_repository),
     llm_service: LlmService = Depends(get_llm_service),
 ):
-    return CardController(card_repository, llm_service)
+    return CardController(card_repository, spoiler_repository, llm_service)
