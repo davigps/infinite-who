@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends
 
-from app.controllers.deps import get_session_controller
-from app.controllers.session import SessionController
-from app.schemas.session import LoginPayload, LoginView
+from app.session.controller import SessionController
+from app.session.deps import get_session_controller
+from app.session.schemas import LoginPayload, LoginView
 
 sessions_router = APIRouter()
 

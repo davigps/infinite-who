@@ -1,10 +1,10 @@
-from app.models import Card, Spoiler
-from app.repositories.card import CardRepository
-from app.controllers.base import BaseController
-from app.repositories.spoiler import SpoilerRepository
-from app.schemas.card import CardCreate
-from app.schemas.card import CardUpdate
-from app.services.llm import LlmService
+from app.database.models import Card, Spoiler
+from app.card.repository import CardRepository
+from app.base.controller import BaseController
+from app.spoiler.repository import SpoilerRepository
+from app.card.schemas import CardCreate
+from app.card.schemas import CardUpdate
+from app.llm.service import LlmService
 
 
 class CardController(BaseController[Card, CardRepository, CardCreate, CardUpdate]):

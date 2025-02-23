@@ -1,13 +1,13 @@
 from fastapi import APIRouter, Depends
 
-from app.controllers.deps import get_user_controller
-from app.controllers.user import UserController
-from app.schemas.user import (
+from app.session.middlewares import get_logged_user
+from app.user.controller import UserController
+from app.user.deps import get_user_controller
+from app.user.schemas import (
     UserCreate,
     UserUpdate,
     UserView,
 )
-from app.services import auth
 
 users_router = APIRouter()
 
@@ -27,7 +27,7 @@ def create_user(
 @users_router.get("/users/me", tags=["users"], response_model=UserView)
 def get_user(
     controller: UserController = Depends(get_user_controller),
-    user: UserView = Depends(auth.get_logged_user),
+    user: UserView = Depends(get_logged_user),
 ):
     return controller.get_by_id(user.id)
 
@@ -36,7 +36,7 @@ def get_user(
 def update_user(
     body: UserUpdate,
     controller: UserController = Depends(get_user_controller),
-    user: UserView = Depends(auth.get_logged_user),
+    user: UserView = Depends(get_logged_user),
 ):
     return controller.update(user.id, body)
 
@@ -44,6 +44,6 @@ def update_user(
 @users_router.delete("/users/me", tags=["users"])
 def delete_user(
     controller: UserController = Depends(get_user_controller),
-    user: UserView = Depends(auth.get_logged_user),
+    user: UserView = Depends(get_logged_user),
 ):
     return controller.delete(user.id)

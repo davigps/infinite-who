@@ -4,10 +4,10 @@ from fastapi.security import OAuth2PasswordBearer
 from jose import jwt
 
 from app.config import Config
-from app.controllers.user import UserController
-from app.repositories.user import UserRepository
-from app.schemas.session import LoginView
-from app.schemas.user import UserCreate, UserView
+from app.user.controller import UserController
+from app.user.repository import UserRepository
+from app.session.schemas import LoginView
+from app.user.schemas import UserCreate, UserView
 
 config = Config()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")

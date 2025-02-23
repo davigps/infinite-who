@@ -1,12 +1,12 @@
 from fastapi import APIRouter, Depends
 
-from app.controllers.deps import get_card_controller
-from app.controllers.card import CardController
-from app.schemas.card import CardView
-from app.services import auth
+from app.card.controller import CardController
+from app.card.deps import get_card_controller
+from app.card.schemas import CardView
+from app.session.middlewares import get_logged_user
 
 cards_router = APIRouter(
-    dependencies=[Depends(auth.get_logged_user)],
+    dependencies=[Depends(get_logged_user)],
 )
 
 

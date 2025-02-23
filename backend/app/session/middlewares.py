@@ -3,8 +3,8 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from jose import JWTError, jwt
 
 from app.config import Config
-from app.repositories.deps import get_user_repository
-from app.repositories.user import UserRepository
+from app.user.deps import get_user_repository
+from app.user.repository import UserRepository
 
 config = Config()
 apikey_scheme = HTTPBearer()

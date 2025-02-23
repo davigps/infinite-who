@@ -1,7 +1,7 @@
 import json
-from app.clients.llm_client import LlmClient
-from app.schemas.llm_service import GeneratedCard
-from app.services.prompt import PromptService
+from app.llm.client import LlmClient
+from app.llm.schemas import GeneratedCard
+from app.llm.prompt_service import PromptService
 
 
 class LlmService:
