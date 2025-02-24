@@ -19,6 +19,8 @@ class CardController(BaseController[Card, CardRepository, CardCreate, CardUpdate
         self.llm_service = llm_service
 
     def create(self) -> Card:
+        # TODO: Create block to not generate more than 10 cards by day.
+
         previous_card_titles = self.repository.get_all_card_titles()
         generated_card = self.llm_service.generate_card(previous_card_titles)
 
