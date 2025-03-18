@@ -8,6 +8,9 @@ start: ## Start the FastAPI server
 format: ## Format the code with ruff
 	pdm run ruff check --fix .
 
+test: ## Run the tests
+	pdm run pytest
+
 db-up: ## Start the database container
 	docker compose up -d
 
